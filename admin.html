@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz App - Admin</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, rgba(70, 160, 255, 0.18), transparent 28%),
+                        radial-gradient(circle at bottom right, rgba(95, 241, 148, 0.16), transparent 24%),
+                        linear-gradient(180deg, #071427 0%, #0c2b4f 100%);
+            display: grid;
+            place-items: center;
+            padding: 28px;
+            color: #eef7ff;
+        }
+        .card {
+            width: min(100%, 720px);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 36px;
+            padding: 38px 34px;
+            box-shadow: 0 32px 96px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(16px);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: clamp(2rem, 2.5vw, 2.8rem);
+            letter-spacing: -0.03em;
+        }
+        .header p {
+            margin: 0;
+            color: #c7daff;
+            max-width: 520px;
+            line-height: 1.75;
+        }
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .button {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 56px;
+            padding: 0 20px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 700;
+            color: #fff;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            background: linear-gradient(135deg, #5a8bff, #3172de);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .button.logout {
+            background: linear-gradient(135deg, #4ad8a5, #1e9f7d);
+        }
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 32px rgba(41, 114, 225, 0.22);
+        }
+        .card-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+        }
+        .shortcut {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cfe9ff;
+        }
+        .shortcut span {
+            font-size: 0.95rem;
+            color: #a7d2ff;
+        }
+        @media (max-width: 800px) {
+            .actions { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <section class="card">
+        <div class="header">
+            <div>
+                <h2>Admin Panel</h2>
+                <p>Manage quizzes, review results, and keep your leaderboard updated with a clean, responsive admin interface.</p>
+            </div>
+        </div>
+        <div class="actions">
+            <a class="button" href="/create">Create Quiz</a>
+            <a class="button" href="/leaderboard">Leaderboard</a>
+            <a class="button logout" href="/logout">Logout</a>
+        </div>
+        <div class="card-footer">
+            <div class="shortcut"><strong>Admin Tip:</strong> Add new quiz questions to keep students engaged.</div>
+        </div>
+    </section>
+</body>
+</html>

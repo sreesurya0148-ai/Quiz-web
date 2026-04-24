@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz App - Register</title>
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: radial-gradient(circle at top left, #68e2ff, transparent 35%), linear-gradient(135deg, #00122c 0%, #072347 100%);
+            color: #eef5ff;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+        form {
+            width: min(420px, 100%);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 28px;
+            padding: 34px;
+            box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(14px);
+        }
+        h2 {
+            margin: 0 0 22px;
+            font-size: 2rem;
+            color: #f8fbff;
+            text-align: center;
+            letter-spacing: 0.03em;
+        }
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            margin: 10px 0;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            outline: none;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        input:focus {
+            border-color: #7fd5ff;
+            box-shadow: 0 0 0 4px rgba(127, 213, 255, 0.13);
+        }
+        button {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #3f92ff, #1f64d1);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: box-shadow 0.2s ease, transform 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 28px rgba(34, 101, 220, 0.24);
+        }
+        .error {
+            color: #ffb2b7;
+            text-align: center;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+        a {
+            display: block;
+            margin-top: 14px;
+            text-align: center;
+            color: #a8d4ff;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <form method="post">
+        <h2>Register</h2>
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        <input name="username" placeholder="Username" required><br>
+        <input name="password" type="password" placeholder="Password" required><br>
+        <button>Register</button>
+    </form>
+    <a href="/logout" style="position: absolute; top: 10px; right: 10px; color: #2196F3; text-decoration: none;">Logout</a>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz App - Login</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, rgba(108, 160, 255, 0.24), transparent 28%),
+                        radial-gradient(circle at bottom right, rgba(49, 221, 206, 0.16), transparent 26%),
+                        linear-gradient(180deg, #06122c 0%, #081d35 100%);
+            color: #eef7ff;
+            display: grid;
+            place-items: center;
+            padding: 32px;
+        }
+        .page-shell {
+            width: min(100%, 1080px);
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 32px;
+            align-items: stretch;
+        }
+        .hero {
+            display: grid;
+            gap: 20px;
+            padding: 42px 36px;
+            border-radius: 36px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            box-shadow: 0 32px 90px rgba(0, 0, 0, 0.22);
+            backdrop-filter: blur(12px);
+        }
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(2.4rem, 3vw, 4rem);
+            line-height: 1.05;
+            letter-spacing: -0.04em;
+        }
+        .hero p {
+            margin: 0;
+            max-width: 520px;
+            color: #c7d9ff;
+            font-size: 1rem;
+            line-height: 1.75;
+        }
+        .login-panel {
+            display: grid;
+            gap: 24px;
+        }
+        .login-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 28px;
+            padding: 32px;
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(18px);
+        }
+        .login-card h2 {
+            margin: 0 0 24px;
+            font-size: 1.75rem;
+            letter-spacing: 0.02em;
+        }
+        .login-card form {
+            display: grid;
+            gap: 16px;
+        }
+        input {
+            width: 100%;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.08);
+            color: #f1f7ff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        input:focus {
+            border-color: #7bb3ff;
+            box-shadow: 0 0 0 4px rgba(123, 179, 255, 0.14);
+        }
+        button {
+            width: 100%;
+            padding: 16px 18px;
+            border-radius: 16px;
+            border: none;
+            background: linear-gradient(135deg, #6a98ff, #4d71ff);
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 30px rgba(53, 107, 255, 0.24);
+        }
+        .link-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        a,
+        .link-secondary {
+            color: #8cc0ff;
+            text-decoration: none;
+            font-size: 0.95rem;
+        }
+        .error {
+            width: min(100%, 520px);
+            margin: 0 auto 16px;
+            padding: 14px 18px;
+            border-radius: 18px;
+            background: rgba(255, 102, 102, 0.16);
+            border: 1px solid rgba(255, 102, 102, 0.28);
+            color: #ffd7d7;
+            font-weight: 700;
+            text-align: center;
+        }
+        @media (max-width: 860px) {
+            .page-shell { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    {% if error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+    <div class="container">
+        <div class="login-box">
+            <form method="post">
+                <input type="hidden" name="role" value="admin">
+                <h2>Admin Login</h2>
+                <input name="username" placeholder="Username" required><br>
+                <input name="password" type="password" placeholder="Password" required><br>
+                <button>Login</button>
+            </form>
+        </div>
+        <div class="login-box">
+            <form method="post">
+                <input type="hidden" name="role" value="student">
+                <h2>Student Login</h2>
+                <input name="username" placeholder="Username" required><br>
+                <input name="password" type="password" placeholder="Password" required><br>
+                <button>Login</button>
+            </form>
+            <a href="/register">Register as Student</a>
+        </div>
+    </div>
+    <a href="/logout" style="position: absolute; top: 10px; right: 10px; color: #2196F3; text-decoration: none;">Logout</a>
+</body>
+</html>

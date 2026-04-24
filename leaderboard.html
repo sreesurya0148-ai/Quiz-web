@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz App - Leaderboard</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, rgba(97, 171, 255, 0.18), transparent 32%),
+                        radial-gradient(circle at bottom right, rgba(70, 255, 197, 0.14), transparent 24%),
+                        linear-gradient(135deg, #051626 0%, #0c385d 100%);
+            color: #eef7ff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 28px;
+        }
+        .leaderboard-shell {
+            width: min(100%, 860px);
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 36px;
+            padding: 32px;
+            box-shadow: 0 28px 84px rgba(0, 0, 0, 0.24);
+            backdrop-filter: blur(16px);
+        }
+        .leaderboard-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .leaderboard-header h2 {
+            margin: 0;
+            font-size: 2.4rem;
+            letter-spacing: -0.03em;
+        }
+        .leaderboard-header p {
+            margin: 0;
+            color: #cbdcff;
+            font-size: 0.98rem;
+        }
+        .standings {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 18px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.06);
+        }
+        th, td {
+            padding: 18px 20px;
+            text-align: left;
+            color: #eef9ff;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+        }
+        th {
+            font-size: 0.95rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.08);
+            font-weight: 700;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(odd) {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        tr:hover {
+            background: rgba(64, 133, 255, 0.12);
+        }
+        .rank {
+            width: 64px;
+            font-weight: 700;
+            color: #a5d3ff;
+        }
+        .name {
+            font-weight: 600;
+        }
+        .score {
+            font-weight: 700;
+            color: #d5f4ff;
+        }
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 14px;
+            margin-top: 24px;
+        }
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 22px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #54a6ff, #276bff);
+            color: #fff;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 28px rgba(39, 107, 255, 0.22);
+        }
+        @media (max-width: 720px) {
+            .leaderboard-header { flex-direction: column; align-items: flex-start; }
+            th, td { padding: 14px 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Leaderboard</h2>
+        <table>
+        <tr><th>Name</th><th>Score</th></tr>
+        {% for row in data %}
+        <tr>
+            <td>{{ row[0] }}</td>
+            <td>{{ row[1] }}</td>
+        </tr>
+        {% endfor %}
+        </table>
+        <div style="text-align:center; margin-top:24px;">
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+</body>
+</html>
