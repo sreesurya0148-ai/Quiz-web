@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, redirect, session, url_for
 import sqlite3
 
@@ -16,21 +17,6 @@ def init_db():
     # Default admin
     cur.execute("INSERT OR IGNORE INTO users VALUES (1, 'admin', 'admin123', 'admin')")
 
-    cur.execute("SELECT COUNT(*) FROM questions")
-    question_count = cur.fetchone()[0]
-    if question_count == 0:
-        default_questions = [
-            ("What is the capital of France?", "Berlin", "Madrid", "Paris", "Rome", "Paris"),
-            ("Which planet is known as the Red Planet?", "Mars", "Venus", "Jupiter", "Saturn", "Mars"),
-            ("What is the largest ocean on Earth?", "Atlantic", "Indian", "Pacific", "Arctic", "Pacific"),
-            ("Who wrote 'Romeo and Juliet'?", "Mark Twain", "William Shakespeare", "Jane Austen", "Charles Dickens", "William Shakespeare"),
-            ("What is 8 x 7?", "54", "56", "64", "72", "56"),
-        ]
-        cur.executemany(
-            "INSERT INTO questions (question, op1, op2, op3, op4, answer) VALUES (?, ?, ?, ?, ?, ?)",
-            default_questions
-        )
-
     conn.commit()
     conn.close()
 
@@ -39,62 +25,26 @@ init_db()
 # ---------------- LOGIN ----------------
 @app.route("/", methods=["GET", "POST"])
 def login():
-    error = None
     if request.method == "POST":
         u = request.form["username"]
         p = request.form["password"]
-        role = request.form.get("role", "student")
 
         conn = sqlite3.connect("quiz.db")
         cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE username=? AND password=? AND role= ?", (u, p, role))
+        cur.execute("SELECT * FROM users WHERE username=? AND password=?", (u, p))
         user = cur.fetchone()
         conn.close()
 
         if user:
             session["user"] = u
-            session["role"] = role
-            session["qno"] = 0
-            session["score"] = 0
+            session["role"] = user[3]
 
-            if role == "admin":
+            if user[3] == "admin":
                 return redirect("/admin")
             else:
                 return redirect("/quiz")
 
-        error = "Invalid username, password, or role"
-
-    return render_template("login.html", error=error)
-
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    error = None
-    if request.method == "POST":
-        u = request.form["username"]
-        p = request.form["password"]
-
-        conn = sqlite3.connect("quiz.db")
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE username=?", (u,))
-        existing = cur.fetchone()
-
-        if existing:
-            error = "Username already exists"
-        else:
-            cur.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
-                        (u, p, "student"))
-            conn.commit()
-            conn.close()
-            return redirect("/")
-
-        conn.close()
-
-    return render_template("register.html", error=error)
-
-@app.route("/logout")
-def logout():
-    session.clear()
-    return redirect("/")
+    return render_template("login.html")
 
 # ---------------- ADMIN ----------------
 @app.route("/admin")
@@ -103,12 +53,38 @@ def admin():
         return redirect("/")
     return render_template("admin.html")
 
+# REGISTER STUDENT
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        u = request.form["username"]
+        p = request.form["password"]
+
+        conn = sqlite3.connect("quiz.db")
+        cur = conn.cursor()
+        
+        # Check if user already exists
+        cur.execute("SELECT * FROM users WHERE username=?", (u,))
+        if cur.fetchone():
+            conn.close()
+            return render_template("register.html", error="Username already exists")
+        
+        # Create new student user
+        cur.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                    (u, p, "student"))
+        conn.commit()
+        conn.close()
+        
+        return redirect("/")
+    
+    return render_template("register.html")
+
 # CREATE QUIZ
 @app.route("/create", methods=["GET", "POST"])
 def create():
     if session.get("role") != "admin":
         return redirect("/")
-
+    
     if request.method == "POST":
         q = request.form["q"]
         op1 = request.form["op1"]
@@ -123,18 +99,21 @@ def create():
                     (q, op1, op2, op3, op4, ans))
         conn.commit()
         conn.close()
+        
+        return render_template("create_quiz.html", success="Question added successfully!")
 
-    return render_template("create quiz.html")
+    return render_template("create_quiz.html")
 
 # ---------------- QUIZ ----------------
 @app.route("/quiz", methods=["GET", "POST"])
 def quiz():
-    if session.get("user") is None or session.get("role") != "student":
+    if session.get("role") != "student":
         return redirect("/")
-
+    
     if "qno" not in session:
         session["qno"] = 0
         session["score"] = 0
+        session["feedback"] = None
 
     conn = sqlite3.connect("quiz.db")
     cur = conn.cursor()
@@ -143,19 +122,17 @@ def quiz():
     conn.close()
 
     if not data:
-        return render_template("quizz.html", q=(None, "No questions available", "", "", "", ""), feedback=None,
-                               question_number=0, total_questions=0)
+        return "<h2 style='text-align:center; margin-top:50px;'>No questions available. Please check back later.</h2>"
 
-    feedback = None
     if request.method == "POST":
         selected = request.form.get("answer")
         correct = data[session["qno"]][6]
 
         if selected == correct:
             session["score"] += 1
-            feedback = "Correct!"
+            session["feedback"] = "Correct!"
         else:
-            feedback = "Wrong!"
+            session["feedback"] = "Wrong!"
 
         session["qno"] += 1
 
@@ -172,8 +149,8 @@ def quiz():
         return redirect("/result")
 
     q = data[session["qno"]]
-    return render_template("quizz.html", q=q, feedback=feedback,
-                           question_number=session["qno"] + 1, total_questions=len(data))
+    feedback = session.pop("feedback", None)
+    return render_template("quiz.html", q=q, question_number=session["qno"]+1, total_questions=len(data), feedback=feedback)
 
 # ---------------- RESULT ----------------
 @app.route("/result")
@@ -193,6 +170,18 @@ def leaderboard():
 
     return render_template("leaderboard.html", data=data)
 
-# ---------------- RUN ----------------
+# LOGOUT
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect("/")
+
+# ERROR HANDLERS
+@app.errorhandler(404)
+def not_found(error):
+    return redirect("/")
+
+# RUN ----------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port, debug=True)
